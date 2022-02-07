@@ -8,13 +8,15 @@ mongoose.connect('mongodb://localhost:27017/fm_mongoose').catch((error) => {
   console.log(error);
 });
 
+const emailSchema = yup.string().email().required();
+
 const taskSchema = new Schema({
   title: {
     type: String,
     required: [true, 'must be !'],
     validate: {
       validator: (v) => /[A-Z][a-z\s]{5,200}/.test(v),
-      message: 'must be !',
+      message: '{VALUE} must be !',
     },
   },
   isDone: { type: Boolean, default: false },
@@ -32,7 +34,7 @@ const taskSchema = new Schema({
     email: {
       type: String,
       required: true,
-      validate: { validator: yup.string().email() },
+      validate: { validator: (v) => emailSchema.isValid(v) },
     },
   },
 });
@@ -58,6 +60,8 @@ app.get('/', async (req, res, next) => {
     next(error);
   }
 });
+
+
 
 const server = http.createServer(app);
 const PORT = process.env.PORT || 3000;
