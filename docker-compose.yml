@@ -1,0 +1,28 @@
+version: "3.8"
+services:
+  backend-app:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports: 
+      - "3005:3000"
+    environment:
+      PORT: 3000
+    volumes:
+      - ./:/server:ro
+    depends_on:
+      - fm_mongo
+    networks:
+      - net1  
+
+  fm_mongo: 
+    image: mongo
+    restart: always
+    networks:
+      - net1
+    volumes:
+      - /home/fm2021-2/Downloads/mongodb:/data/db
+
+networks:
+  net1:
+    name: my_network_1
